@@ -1,0 +1,38 @@
+Build a modern, sleek, and highly responsive store/inventory management web application for "Culaccino coffee house" focused on exceptional UI/UX.
+Tech Stack: React (Vite), Tailwind CSS, Lucide React icons, and local storage (or a lightweight database schema if fullstack).
+Key Features & Requirements:
+
+Role-Based Access Control (Switchable View or Login modal):
+Manager Mode: Full CRUD capabilities (Add new items, edit item details, delete items, adjust stock levels, set minimum stock alerts, and view full transaction audit logs).
+Employee Mode: Simplified, touch-friendly catalog view. Employees CANNOT add or delete items. They can only select an item and withdraw/deduct quantities.
+Mandatory Field in Employee Mode: When withdrawing any item, entering/selecting the employee's name is strictly mandatory before confirming the transaction.
+UI/UX Guidelines:
+Clean, minimalist, and warm aesthetic fitting a specialty coffee house (e.g., earthy tones, dark/light mode toggle, smooth transitions, and clear visual feedback).
+Fast search bar, category filtering (e.g., Coffee Beans, Dairy/Milk, Syrups, Cups & Packaging, Cleaning Supplies).
+Visual low-stock badges (e.g., red/orange indicators when an item drops below a threshold).
+Transaction History / Audit Log:
+A dedicated tab showing a timestamped history of every action: who added items, who withdrew items, quantities changed, and the employee's name for accountability.
+/canvas-design
+/frontend-design
+
+/web-artifacts-builder
+
+/skill-creatorAdd a "Manager Reports & Analytics" module to the application with the following capabilities:
+
+Advanced Reporting Dashboard:
+
+Create a dedicated "Reports" tab accessible only to Managers.
+Filters: Add functional filters for:
+Date Range (Start Date - End Date).
+Transaction Type (Restocking, Withdrawals, Adjustments/Deletions).
+Employee Name (to track specific performance).
+Print & Export Functionality:
+
+Print Button: Create a "Print Report" button that uses CSS media queries (@media print) to generate a clean, printer-friendly document of the current filtered data (hide UI elements like buttons/navigation, show a clean header with "Culaccino Coffee House - Inventory Report").
+Export Button: Create an "Export to CSV" button that triggers a download of the current filtered transaction list (useful for Excel/Accounting software).
+Summary Cards:
+
+Display summary stats at the top of the reports page:
+Total Items Withdrawn (Quantity).
+Total Items Added (Restocked).
+Net inventory movement for the selected period.

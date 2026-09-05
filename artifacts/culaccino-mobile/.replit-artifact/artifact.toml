@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/mobile/"
+title = "Culaccino Mobile"
+description = "Mobile companion app for Culaccino Coffee House inventory management. Lets baristas quickly withdraw items on the go and managers check stock levels and restock items—all synced with the same data store as the web app."
+version = "1.0.0"
+id = "artifacts/culaccino-mobile"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/mobile/" ]
+localPort = 22017
+
+[services.development]
+run = "pnpm --filter @workspace/culaccino-mobile run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/culaccino-mobile", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/culaccino-mobile", "run", "serve" ]
+
+[services.env]
+PORT = "22017"
+BASE_PATH = "/mobile/"

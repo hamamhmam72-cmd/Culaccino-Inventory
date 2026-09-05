@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Culaccino Inventory"
+description = "A modern, role-based store and inventory management web app for Culaccino Coffee House. Features Manager and Employee modes with RBAC, full CRUD inventory management, real-time low-stock alerts, transaction audit logs, advanced reporting with date/type/employee filters, CSV export, and print-ready reports. All data persists in localStorage."
+version = "1.0.0"
+id = "artifacts/culaccino-inventory"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22126
+
+[services.development]
+run = "pnpm --filter @workspace/culaccino-inventory run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/culaccino-inventory", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/culaccino-inventory/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22126"
+BASE_PATH = "/"

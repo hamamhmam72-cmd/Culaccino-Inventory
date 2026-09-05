@@ -1,0 +1,275 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: inventory
+    description: Inventory items and transactions
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /items:
+    get:
+      operationId: listItems
+      tags: [inventory]
+      summary: List all inventory items
+      responses:
+        "200":
+          description: Items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Item"
+    post:
+      operationId: createItem
+      tags: [inventory]
+      summary: Add a new inventory item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+  /items/{id}:
+    patch:
+      operationId: updateItem
+      tags: [inventory]
+      summary: Edit an inventory item
+      parameters:
+        - $ref: "#/components/parameters/ItemId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /items/{id}/delete:
+    post:
+      operationId: deleteItem
+      tags: [inventory]
+      summary: Delete an inventory item
+      parameters:
+        - $ref: "#/components/parameters/ItemId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItemDeletion"
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /items/{id}/withdraw:
+    post:
+      operationId: withdrawItem
+      tags: [inventory]
+      summary: Withdraw stock from an item
+      parameters:
+        - $ref: "#/components/parameters/ItemId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StockAction"
+      responses:
+        "200":
+          description: Updated item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /items/{id}/restock:
+    post:
+      operationId: restockItem
+      tags: [inventory]
+      summary: Restock an item
+      parameters:
+        - $ref: "#/components/parameters/ItemId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StockAction"
+      responses:
+        "200":
+          description: Updated item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /transactions:
+    get:
+      operationId: listTransactions
+      tags: [inventory]
+      summary: List all transactions, newest first
+      responses:
+        "200":
+          description: Transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+components:
+  parameters:
+    ItemId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    ErrorMessage:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+    Item:
+      type: object
+      required:
+        [id, name, category, quantity, unit, minStock, addedBy, addedAt, updatedAt]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        category: { type: string }
+        quantity: { type: number }
+        unit: { type: string }
+        minStock: { type: number }
+        cost: { type: ["number", "null"] }
+        totalValue:
+          type: ["number", "null"]
+          description: Current inventory value (cost multiplied by quantity)
+        addedBy: { type: string }
+        addedAt: { type: string }
+        updatedAt: { type: string }
+    ItemInput:
+      type: object
+      required: [name, category, quantity, unit, minStock, performedBy]
+      properties:
+        name: { type: string, minLength: 1 }
+        category: { type: string, minLength: 1 }
+        quantity: { type: number, minimum: 0 }
+        unit: { type: string, minLength: 1 }
+        minStock: { type: number, minimum: 0 }
+        cost: { type: ["number", "null"] }
+        performedBy: { type: string, minLength: 1 }
+    ItemUpdate:
+      type: object
+      required: [performedBy]
+      properties:
+        name: { type: string, minLength: 1 }
+        category: { type: string, minLength: 1 }
+        quantity: { type: number, minimum: 0 }
+        unit: { type: string, minLength: 1 }
+        minStock: { type: number, minimum: 0 }
+        cost: { type: ["number", "null"] }
+        performedBy: { type: string, minLength: 1 }
+    ItemDeletion:
+      type: object
+      required: [performedBy]
+      properties:
+        performedBy: { type: string, minLength: 1 }
+    StockAction:
+      type: object
+      required: [quantity, performedBy]
+      properties:
+        quantity: { type: number, exclusiveMinimum: 0 }
+        performedBy: { type: string, minLength: 1 }
+        note: { type: string }
+    Transaction:
+      type: object
+      required:
+        [
+          id,
+          itemId,
+          itemName,
+          type,
+          quantityBefore,
+          quantityAfter,
+          delta,
+          performedBy,
+          timestamp,
+        ]
+      properties:
+        id: { type: string }
+        itemId: { type: string }
+        itemName: { type: string }
+        type:
+          type: string
+          enum: [restock, withdrawal, adjustment, deletion, addition]
+        quantityBefore: { type: number }
+        quantityAfter: { type: number }
+        delta: { type: number }
+        performedBy: { type: string }
+        timestamp: { type: string }
+        note: { type: ["string", "null"] }
+    
