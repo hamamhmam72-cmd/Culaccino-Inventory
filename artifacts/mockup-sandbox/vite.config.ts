@@ -1,3 +1,6 @@
+if (!process.env.PORT) {
+  process.env.PORT = "3000";
+}
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
