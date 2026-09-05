@@ -10,6 +10,13 @@ import { mockupPreviewPlugin } from "./mockupPreviewPlugin";
 
 const rawPort = process.env.PORT;
 
+if (!process.env.PORT) {
+  process.env.PORT = "3000";
+}
+if (!process.env.BASE_PATH) {
+  process.env.BASE_PATH = "/";
+}
+
 if (!rawPort) {
   throw new Error(
     "PORT environment variable is required but was not provided.",
